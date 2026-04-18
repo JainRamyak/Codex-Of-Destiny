@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Codex | Codex of Destiny</title>
+  
+  <link rel="stylesheet" href="../styles/globals.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/animations.css">
+</head>
+<body class="page-transition-enter" data-protected="true">
+
+  <div id="navbar-container"></div>
+
+  <main class="container" style="padding-top: 120px; padding-bottom: 100px; min-height: 100vh;">
+    <h1 style="text-align: center; font-size: 3rem; margin-bottom: var(--spacing-2); text-shadow: var(--shadow-glow);">Archives of Arcania</h1>
+    <p style="text-align: center; color: var(--color-muted); margin-bottom: var(--spacing-8);">Search the knowledge of the ancients.</p>
+
+    <div style="max-width: 600px; margin: 0 auto var(--spacing-8) auto;">
+      <div class="form-group">
+        <input type="text" id="search-codex" class="form-control" placeholder=" " style="border-radius: var(--radius-lg); padding: var(--spacing-4);">
+        <label class="floating-label" style="left: var(--spacing-4);">Search lore, beasts, or magic...</label>
+      </div>
+    </div>
+
+    <div id="codex-container" class="grid-3-col">
+      <!-- Cards rendered via JS -->
+    </div>
+  </main>
+
+  <div id="spotify-widget"></div>
+  <div id="footer-container"></div>
+  <script type="module" src="../scripts/utils.js"></script>
+  <script type="module" src="../scripts/auth.js"></script>
+  <script type="module" src="../scripts/codex.js"></script>
+  <script type="module" src="../scripts/spotify.js"></script>
+</body>
+</html>

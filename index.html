@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codex of Destiny | Enter the Void</title>
+  <meta name="description" content="A web-based fantasy game and lore platform. Discover the secrets of the Codex.">
+  <meta property="og:title" content="Codex of Destiny">
+  <meta property="og:description" content="Discover the secrets of the Codex.">
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  
+  <link rel="stylesheet" href="styles/globals.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/animations.css">
+</head>
+<body class="page-transition-enter">
+
+  <div id="navbar-container"></div>
+
+  <section class="hero">
+    <div class="starfield"></div>
+    <div style="position: relative; z-index: 1;">
+      <h1 class="reveal-text" style="font-size: clamp(3rem, 8vw, 6rem); margin-bottom: 24px; text-shadow: var(--shadow-glow);">
+        Embrace the Void
+      </h1>
+      <p class="reveal-text" style="font-size: 1.25rem; color: var(--color-text); opacity: 0.8; max-width: 600px; margin: 0 auto 40px auto; transition-delay: 0.2s;">
+        Unlock the ancient secrets, gather your party, and delve into the most immersive fantasy universe ever written.
+      </p>
+      <div class="reveal-text" style="display: flex; gap: 16px; justify-content: center; transition-delay: 0.4s;">
+        <a href="pages/codex.html" class="btn btn-primary">Enter the Codex</a>
+        <a href="#features" class="btn btn-outline">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="container" style="padding: 100px var(--spacing-4);">
+    <h2 style="text-align: center; margin-bottom: 64px; font-size: 2.5rem; text-shadow: var(--shadow-glow);">Features of the Void</h2>
+    <div class="grid-3-col">
+      <div class="card">
+        <h3 style="color: var(--color-primary);">Deep Lore</h3>
+        <p style="color: var(--color-muted);">Hundreds of entries detailing the ancient wars, races, and magic of Arcania. Fully searchable and beautifully presented.</p>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--color-accent);">Void Chests</h3>
+        <p style="color: var(--color-muted);">Unlock daily chests to earn epic and legendary loot. Watch as the particles burst and reveal your destiny.</p>
+      </div>
+      <div class="card">
+        <h3 style="color: var(--color-danger);">Immersive Audio</h3>
+        <p style="color: var(--color-muted);">Integrated Spotify player lets you listen to curated epic fantasy playlists while you read the codex.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="spotify-widget"></div>
+  <div id="footer-container"></div>
+
+  <script type="module" src="scripts/utils.js"></script>
+  <script type="module" src="scripts/spotify.js"></script>
+  <script>
+    // Simple text reveal animation trigger
+    setTimeout(() => {
+      document.querySelectorAll('.reveal-text').forEach(el => el.classList.add('visible'));
+    }, 100);
+  </script>
+</body>
+</html>
