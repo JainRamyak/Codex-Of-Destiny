@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory | Codex of Destiny</title>
+  <link rel="stylesheet" href="../styles/globals.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <style>
+    body { padding-top: 60px; }
+    
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+    .inv-slot {
+      aspect-ratio: 1;
+      background: var(--pixel-black);
+      border: 2px solid var(--pixel-border);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 8px;
+      padding: 5px;
+    }
+
+    .inv-item-icon {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <div class="container grid grid-cols-2 gap-8" style="padding-top: 2rem;">
+    
+    <!-- Left: Stats -->
+    <div class="panel">
+      <h2 class="text-gold">HERO STATS</h2>
+      <div style="font-size: 12px; line-height: 2;">
+        <p><span class="text-green">Name:</span> <span id="stat-name"></span></p>
+        <p><span class="text-green">Class:</span> <span id="stat-class"></span></p>
+        <p><span class="text-green">Level:</span> <span id="stat-level"></span></p>
+        <p><span class="text-green">Total XP:</span> <span id="stat-xp"></span></p>
+        <p><span class="text-green">Gold:</span> <span id="stat-gold"></span></p>
+        <p><span class="text-green">Quests Done:</span> <span id="stat-quests"></span></p>
+      </div>
+      
+      <h3 class="text-blue" style="margin-top: 20px;">BADGES</h3>
+      <div id="badges-container" style="display: flex; gap: 10px; margin-top: 10px;">
+        <!-- Badges injected here -->
+      </div>
+    </div>
+
+    <!-- Right: Inventory -->
+    <div class="panel">
+      <h2 class="text-gold">INVENTORY SATCHEL</h2>
+      <div class="inventory-grid" id="inventory-grid">
+        <!-- 20 slots injected here -->
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../scripts/utils.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const utils = new GameUtils();
+      const token = localStorage.getItem('token');
+      if (!token) window.location.href = 'auth.html';
+      
+      await utils.loadComponent('navbar-container', '../components/navbar.html');
+
+      let user;
+      try {
+        const res = await fetch('http://localhost:3000/api/auth/me', {
+          headers: { 'x-auth-token': token }
+        });
+        user = await res.json();
+        
+        // HUD
+        document.getElementById('hud-hero-name').innerText = user.heroName || user.username;
+        document.getElementById('hud-level').innerText = user.level;
+        document.getElementById('hud-hp-bar').style.width = `${user.hp}%`;
+        document.getElementById('hud-xp-bar').style.width = `${(user.xp % 100)}%`;
+        document.getElementById('hud-gold').innerText = user.gold;
+        
+        // Stats
+        document.getElementById('stat-name').innerText = user.heroName || user.username;
+        document.getElementById('stat-class').innerText = user.heroClass || 'Code Mage';
+        document.getElementById('stat-level').innerText = user.level;
+        document.getElementById('stat-xp').innerText = user.xp;
+        document.getElementById('stat-gold').innerText = user.gold;
+        document.getElementById('stat-quests').innerText = user.completedQuests ? user.completedQuests.length : 0;
+        
+        // Inventory 5x4 grid
+        const invGrid = document.getElementById('inventory-grid');
+        for(let i=0; i<20; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'inv-slot';
+            if(user.inventory && user.inventory[i]) {
+                const itemName = user.inventory[i];
+                let icon = '📜'; // default scroll
+                if(itemName.includes('Potion')) icon = '🧪';
+                if(itemName.includes('Sword')) icon = '🗡️';
+                if(itemName.includes('Staff')) icon = '🪄';
+                
+                slot.innerHTML = `<div class="inv-item-icon">${icon}</div><div>${itemName}</div>`;
+                slot.style.borderColor = 'var(--pixel-gold)';
+            }
+            invGrid.appendChild(slot);
+        }
+        
+        // Badges
+        const badgesContainer = document.getElementById('badges-container');
+        if(user.completedQuests && user.completedQuests.length > 0) {
+            badgesContainer.innerHTML += `<div style="font-size:24px;" title="First Blood">🏅</div>`;
+        }
+        if(user.completedQuests && user.completedQuests.length >= 10) {
+            badgesContainer.innerHTML += `<div style="font-size:24px;" title="Python Master">🐍</div>`;
+        }
+
+      } catch(err) { console.error(err); }
+    });
+  </script>
+</body>
+</html>

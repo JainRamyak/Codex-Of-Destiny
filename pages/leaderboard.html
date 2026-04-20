@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard | Codex of Destiny</title>
+  <link rel="stylesheet" href="../styles/globals.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <style>
+    body { padding-top: 60px; }
+    
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+
+    .leaderboard-table th, .leaderboard-table td {
+      border: 1px solid var(--pixel-border);
+      padding: 10px;
+      text-align: left;
+    }
+
+    .leaderboard-table th {
+      background: var(--pixel-black);
+      color: var(--pixel-gold);
+    }
+
+    .leaderboard-table tr:nth-child(even) {
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .current-user {
+      background: rgba(255, 215, 0, 0.2) !important;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <div class="container" style="padding-top: 2rem;">
+    <h1 class="text-gold" style="text-align: center; margin-bottom: 2rem;">HALL OF HEROES</h1>
+    
+    <div class="panel">
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>RANK</th>
+            <th>HERO</th>
+            <th>CLASS</th>
+            <th>LEVEL</th>
+            <th>XP</th>
+            <th>QUESTS</th>
+          </tr>
+        </thead>
+        <tbody id="lb-body">
+          <!-- Rows injected here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="../scripts/utils.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const utils = new GameUtils();
+      const token = localStorage.getItem('token');
+      
+      if(token) {
+         await utils.loadComponent('navbar-container', '../components/navbar.html');
+      }
+
+      let currentUser = null;
+      if(token) {
+        try {
+          const res = await fetch('http://localhost:3000/api/auth/me', { headers: { 'x-auth-token': token }});
+          if(res.ok) {
+             currentUser = await res.json();
+             // HUD
+             document.getElementById('hud-hero-name').innerText = currentUser.heroName || currentUser.username;
+             document.getElementById('hud-level').innerText = currentUser.level;
+             document.getElementById('hud-hp-bar').style.width = `${currentUser.hp}%`;
+             document.getElementById('hud-xp-bar').style.width = `${(currentUser.xp % 100)}%`;
+             document.getElementById('hud-gold').innerText = currentUser.gold;
+          }
+        } catch(e) {}
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/api/progress/leaderboard');
+        const leaders = await res.json();
+        
+        const lbBody = document.getElementById('lb-body');
+        
+        leaders.forEach((leader, idx) => {
+            const tr = document.createElement('tr');
+            if(currentUser && leader._id === currentUser._id) {
+                tr.className = 'current-user';
+            }
+            
+            let rankDisplay = `${idx + 1}`;
+            if(idx === 0) rankDisplay = '👑 1';
+            if(idx === 1) rankDisplay = '🥈 2';
+            if(idx === 2) rankDisplay = '🥉 3';
+            
+            tr.innerHTML = `
+              <td>${rankDisplay}</td>
+              <td class="text-blue">${leader.heroName || 'Unknown'}</td>
+              <td class="text-purple">${leader.heroClass || 'Code Mage'}</td>
+              <td>${leader.level}</td>
+              <td class="text-green">${leader.xp}</td>
+              <td>${leader.completedQuests ? leader.completedQuests.length : 0}</td>
+            `;
+            lbBody.appendChild(tr);
+        });
+        
+      } catch(err) {
+        console.error("Error loading leaderboard", err);
+      }
+    });
+  </script>
+</body>
+</html>

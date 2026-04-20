@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Hero | Codex of Destiny</title>
+  <link rel="stylesheet" href="../styles/globals.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <style>
+    .class-card {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .class-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--pixel-gold);
+    }
+    .class-card.selected {
+      border-color: var(--pixel-gold);
+      background: rgba(255, 215, 0, 0.1);
+    }
+    .avatar-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 3px solid #000;
+      cursor: pointer;
+      display: inline-block;
+      margin: 5px;
+    }
+    .avatar-circle.selected {
+      border-color: var(--pixel-gold);
+      box-shadow: 0 0 10px var(--pixel-gold);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" style="padding-top: 2rem;">
+    <h1 class="text-gold" style="text-align: center; text-shadow: var(--shadow-pixel);">FORGE YOUR HERO</h1>
+
+    <div class="panel">
+      <label class="text-green">HERO NAME</label>
+      <input type="text" id="hero-name" placeholder="Enter name...">
+    </div>
+
+    <h2 class="text-blue" style="font-size: 14px;">CHOOSE CLASS</h2>
+    <div class="grid grid-cols-3 gap-4" id="class-selection">
+      <div class="panel class-card selected" data-class="Code Mage">
+        <h3 class="text-purple">🧙 Code Mage</h3>
+        <p style="font-size: 10px; color: var(--pixel-white);">+XP on Python</p>
+        <div style="margin-top: 10px; font-size: 8px;">
+          STR <div class="progress-container" style="width: 50px;"><div class="progress-bar hp" style="width: 20%;"></div></div><br>
+          INT <div class="progress-container" style="width: 50px;"><div class="progress-bar xp" style="width: 90%;"></div></div>
+        </div>
+      </div>
+      <div class="panel class-card" data-class="Script Knight">
+        <h3 class="text-gold">⚡ Script Knight</h3>
+        <p style="font-size: 10px; color: var(--pixel-white);">+XP on JavaScript</p>
+        <div style="margin-top: 10px; font-size: 8px;">
+          STR <div class="progress-container" style="width: 50px;"><div class="progress-bar hp" style="width: 60%;"></div></div><br>
+          DEX <div class="progress-container" style="width: 50px;"><div class="progress-bar xp" style="width: 60%;"></div></div>
+        </div>
+      </div>
+      <div class="panel class-card" data-class="Iron Coder">
+        <h3 class="text-red">🤖 Iron Coder</h3>
+        <p style="font-size: 10px; color: var(--pixel-white);">+XP on C++</p>
+        <div style="margin-top: 10px; font-size: 8px;">
+          STR <div class="progress-container" style="width: 50px;"><div class="progress-bar hp" style="width: 90%;"></div></div><br>
+          INT <div class="progress-container" style="width: 50px;"><div class="progress-bar xp" style="width: 30%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top: 1rem;">
+      <h2 class="text-blue" style="font-size: 14px;">CHOOSE AVATAR</h2>
+      <div id="avatar-selection">
+        <div class="avatar-circle selected" data-color="blue" style="background: var(--pixel-blue);"></div>
+        <div class="avatar-circle" data-color="red" style="background: var(--pixel-red);"></div>
+        <div class="avatar-circle" data-color="green" style="background: var(--pixel-green);"></div>
+        <div class="avatar-circle" data-color="purple" style="background: var(--pixel-purple);"></div>
+        <div class="avatar-circle" data-color="gold" style="background: var(--pixel-gold);"></div>
+        <div class="avatar-circle" data-color="white" style="background: var(--pixel-white);"></div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      <button class="btn" id="begin-quest-btn" style="font-size: 14px;">BEGIN QUEST ▶</button>
+    </div>
+  </div>
+
+  <script src="../scripts/utils.js"></script>
+  <script src="../scripts/character.js"></script>
+</body>
+</html>

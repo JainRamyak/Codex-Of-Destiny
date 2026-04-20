@@ -1,163 +1,74 @@
-import { showToast, storage } from './utils.js';
-
-class Auth {
-  constructor() {
-    this.user = storage.get('user');
-  }
-
-  isLoggedIn() {
-    return !!this.user;
-  }
-
-  async login(email, password) {
-    try {
-      const res = await fetch('http://localhost:3000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Login failed');
-      
-      const user = { email: data.user.email, token: data.token };
-      this.user = user;
-      storage.set('user', user);
-      return user;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async signup(email, password, confirmPassword) {
-    if (password !== confirmPassword) {
-      throw new Error('Passwords do not match.');
-    }
-    if (password.length < 8) {
-      throw new Error('Password must be at least 8 characters.');
-    }
-
-    try {
-      const res = await fetch('http://localhost:3000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Signup failed');
-      
-      const user = { email: data.user.email, token: data.token };
-      this.user = user;
-      storage.set('user', user);
-      return user;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  logout() {
-    this.user = null;
-    storage.remove('user');
-    window.location.href = '../index.html';
-  }
-}
-
-export const auth = new Auth();
-
-// Attach to global for easy HTML access
-window.auth = auth;
-
-// Auth Page Logic (if on auth.html)
 document.addEventListener('DOMContentLoaded', () => {
-  const loginForm = document.getElementById('login-form');
-  const signupForm = document.getElementById('signup-form');
   const tabLogin = document.getElementById('tab-login');
-  const tabSignup = document.getElementById('tab-signup');
+  const tabRegister = document.getElementById('tab-register');
+  const registerFields = document.getElementById('register-fields');
+  const authForm = document.getElementById('auth-form');
+  const errorMsg = document.getElementById('error-msg');
+  const utils = new GameUtils();
 
-  if (tabLogin && tabSignup) {
-    tabLogin.addEventListener('click', () => {
-      loginForm.style.display = 'block';
-      signupForm.style.display = 'none';
-      tabLogin.classList.add('active');
-      tabSignup.classList.remove('active');
-    });
+  let isLogin = true;
 
-    tabSignup.addEventListener('click', () => {
-      loginForm.style.display = 'none';
-      signupForm.style.display = 'block';
-      tabSignup.classList.add('active');
-      tabLogin.classList.remove('active');
-    });
-  }
-
-  // Password toggle
-  document.querySelectorAll('.password-toggle').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const input = e.target.previousElementSibling.previousElementSibling;
-      if (input.type === 'password') {
-        input.type = 'text';
-      } else {
-        input.type = 'password';
-      }
-    });
+  tabLogin.addEventListener('click', () => {
+    utils.playSound('click');
+    isLogin = true;
+    tabLogin.classList.add('active');
+    tabRegister.classList.remove('active');
+    registerFields.style.display = 'none';
+    errorMsg.style.display = 'none';
   });
 
-  const forgotPasswordBtn = document.getElementById('forgot-password-btn');
-  if (forgotPasswordBtn) {
-    forgotPasswordBtn.addEventListener('click', () => {
-      showToast('A magic link to reset your password has been sent to your owl.', 'info');
-    });
-  }
+  tabRegister.addEventListener('click', () => {
+    utils.playSound('click');
+    isLogin = false;
+    tabRegister.classList.add('active');
+    tabLogin.classList.remove('active');
+    registerFields.style.display = 'block';
+    errorMsg.style.display = 'none';
+  });
 
-  if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = e.target.email.value;
-      const password = e.target.password.value;
-      const btn = e.target.querySelector('button');
-      
-      const originalText = btn.innerText;
-      btn.innerText = 'Loading...';
-      btn.disabled = true;
+  authForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    utils.playSound('click');
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const username = document.getElementById('username').value;
 
-      try {
-        await auth.login(email, password);
-        showToast('Login successful!', 'success');
-        setTimeout(() => window.location.href = 'codex.html', 1000);
-      } catch (err) {
-        showToast(err.message, 'error');
-        btn.innerText = originalText;
-        btn.disabled = false;
+    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+    const body = isLogin ? { email, password } : { username, email, password };
+
+    try {
+      const res = await fetch(`http://localhost:3000${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        errorMsg.style.display = 'block';
+        errorMsg.innerText = data.msg || 'An error occurred';
+        utils.playSound('wrong');
+        return;
       }
-    });
-  }
 
-  if (signupForm) {
-    signupForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = e.target.email.value;
-      const password = e.target.password.value;
-      const confirmPassword = e.target.confirmPassword.value;
-      const btn = e.target.querySelector('button');
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      utils.playSound('correct');
       
-      const originalText = btn.innerText;
-      btn.innerText = 'Loading...';
-      btn.disabled = true;
+      setTimeout(() => {
+        if(isLogin) {
+            window.location.href = 'world-map.html';
+        } else {
+            window.location.href = 'character-create.html';
+        }
+      }, 500);
 
-      try {
-        await auth.signup(email, password, confirmPassword);
-        showToast('Account created successfully!', 'success');
-        setTimeout(() => window.location.href = 'codex.html', 1000);
-      } catch (err) {
-        showToast(err.message, 'error');
-        btn.innerText = originalText;
-        btn.disabled = false;
-      }
-    });
-  }
-  
-  // Guard protected pages
-  const isProtected = document.body.dataset.protected === 'true';
-  if (isProtected && !auth.isLoggedIn()) {
-    window.location.href = 'auth.html';
-  }
+    } catch (err) {
+      console.error(err);
+      errorMsg.style.display = 'block';
+      errorMsg.innerText = 'Server error';
+      utils.playSound('wrong');
+    }
+  });
 });

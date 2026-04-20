@@ -3,28 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lost in the Void | 404</title>
-  
+  <title>404 - Wild Bug | Codex of Destiny</title>
   <link rel="stylesheet" href="../styles/globals.css">
   <link rel="stylesheet" href="../styles/layout.css">
   <link rel="stylesheet" href="../styles/components.css">
-  <link rel="stylesheet" href="../styles/animations.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: var(--pixel-black);
+      text-align: center;
+    }
+    .bug-sprite {
+      font-size: 80px;
+      animation: floatUp 2s infinite alternate ease-in-out;
+      margin-bottom: 2rem;
+    }
+  </style>
 </head>
-<body class="page-transition-enter" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; background: #000;">
+<body>
 
-  <div id="navbar-container" style="width: 100%; position: absolute; top: 0;"></div>
-  <div class="starfield"></div>
+  <h1 class="text-red">⚠️ A WILD BUG APPEARED!</h1>
+  <div class="bug-sprite">🐛</div>
+  <p class="text-gold" style="margin-bottom: 2rem;">Error 404: The path you are looking for has been corrupted.</p>
+  
+  <a href="../index.html" class="btn">FLEE TO SAFETY</a>
 
-  <div class="container animate-float">
-    <h1 style="font-size: clamp(6rem, 15vw, 10rem); color: var(--color-primary); text-shadow: var(--shadow-glow); margin-bottom: 0;">404</h1>
-    <h2 style="font-size: 2rem; margin-bottom: var(--spacing-6);">Lost in the Void</h2>
-    <p style="color: var(--color-muted); max-width: 500px; margin: 0 auto var(--spacing-8) auto;">
-      The magical coordinates you provided do not exist in this realm. The page may have been destroyed by a void rift.
-    </p>
-    <a href="../index.html" class="btn btn-primary">Return to Safety</a>
-  </div>
-
-  <div id="footer-container" style="width: 100%; position: absolute; bottom: 0;"></div>
-  <script type="module" src="../scripts/utils.js"></script>
 </body>
 </html>

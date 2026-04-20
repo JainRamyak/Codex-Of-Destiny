@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quest | Codex of Destiny</title>
+  <link rel="stylesheet" href="../styles/globals.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/animations.css">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css">
+  <style>
+    body { padding-top: 60px; }
+    
+    .npc-sprite {
+      width: 64px;
+      height: 64px;
+      background: var(--pixel-red);
+      margin: 0 auto 1rem auto;
+      border: var(--border-pixel);
+      box-shadow: var(--shadow-pixel);
+    }
+
+    .CodeMirror {
+      height: 300px;
+      border: var(--border-pixel);
+      font-family: monospace;
+      font-size: 14px;
+    }
+
+    .stars { color: var(--pixel-gold); }
+
+    /* Flash animation overlay */
+    #flash-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+  <div id="flash-overlay"></div>
+
+  <div class="split-screen container">
+    <!-- LEFT PANEL -->
+    <div class="split-left panel" id="left-panel">
+      <div class="npc-sprite sprite-walk" id="npc-sprite"></div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <span class="text-blue" id="quest-lang">LANG</span>
+        <span class="stars" id="quest-diff">⭐</span>
+      </div>
+
+      <h2 id="quest-title" class="text-gold" style="font-size: 16px;">Loading Quest...</h2>
+      
+      <p id="quest-story" style="margin-bottom: 2rem; font-size: 12px; line-height: 1.6; color: var(--pixel-white); min-height: 100px;"></p>
+
+      <button id="hint-btn" class="btn" style="margin-bottom: 2rem; width: 100%;">GET HINT (-10 GOLD)</button>
+      <div id="hint-text" style="display: none; color: var(--pixel-gold); font-size: 10px; margin-bottom: 2rem;"></div>
+
+      <div class="panel" style="background: var(--pixel-black);">
+        <h3 class="text-green" style="font-size: 12px; margin-bottom: 0.5rem;">REWARDS:</h3>
+        <ul style="list-style: none; font-size: 10px; color: var(--pixel-white);">
+          <li id="reward-xp">+0 XP</li>
+          <li id="reward-gold" class="text-gold">+0 Gold</li>
+          <li id="reward-item" class="text-purple"></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="split-right">
+      <h2 class="text-blue" style="font-size: 14px; margin-bottom: 1rem;">THE SPELL SCROLL</h2>
+      <textarea id="editor"></textarea>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+        <button id="run-btn" class="btn text-green" style="font-size: 14px;">▶ CAST SPELL</button>
+        <button id="next-btn" class="btn" style="display: none; background: var(--pixel-blue); color: #fff;">NEXT QUEST ▶</button>
+      </div>
+
+      <div class="terminal" id="terminal">
+        > Awaiting execution...
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
+  
+  <script src="../scripts/utils.js"></script>
+  <script src="../scripts/quest.js"></script>
+</body>
+</html>

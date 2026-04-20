@@ -3,100 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auth | Codex of Destiny</title>
-  
+  <title>The Save Point Inn | Codex of Destiny</title>
   <link rel="stylesheet" href="../styles/globals.css">
   <link rel="stylesheet" href="../styles/layout.css">
   <link rel="stylesheet" href="../styles/components.css">
-  <link rel="stylesheet" href="../styles/animations.css">
   <style>
-    .auth-container {
-      min-height: 100vh;
+    body {
       display: flex;
-      align-items: center;
       justify-content: center;
-      background: var(--color-bg) url('https://www.transparenttextures.com/patterns/stardust.png') repeat top center;
-      padding: var(--spacing-4);
+      align-items: center;
+      min-height: 100vh;
+      background: var(--pixel-surface);
     }
-    .auth-card {
+    .auth-container {
       width: 100%;
       max-width: 400px;
-      background: rgba(26, 26, 46, 0.8);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(124, 58, 237, 0.3);
-      padding: var(--spacing-8);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-glow);
     }
-    .auth-tabs {
+    .tabs {
       display: flex;
-      gap: var(--spacing-4);
-      margin-bottom: var(--spacing-8);
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: var(--spacing-2);
+      margin-bottom: 1rem;
     }
-    .auth-tab {
-      color: var(--color-muted);
+    .tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      background: var(--pixel-black);
+      color: var(--pixel-gold);
+      border: var(--border-pixel);
       cursor: pointer;
-      font-weight: 600;
-      transition: var(--transition);
+      font-size: 10px;
     }
-    .auth-tab.active {
-      color: var(--color-primary);
-      text-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
-    }
-    .auth-tab:hover {
-      color: var(--color-text);
+    .tab.active {
+      background: var(--pixel-gold);
+      color: var(--pixel-black);
     }
   </style>
 </head>
-<body class="page-transition-enter">
-
-  <div id="navbar-container"></div>
+<body>
 
   <div class="auth-container">
-    <div class="auth-card animate-float">
-      <div class="auth-tabs">
-        <div class="auth-tab active" id="tab-login">Login</div>
-        <div class="auth-tab" id="tab-signup">Sign Up</div>
-      </div>
+    <h1 class="text-gold" style="text-align: center; font-size: 1.5rem; text-shadow: var(--shadow-pixel);">THE SAVE POINT INN</h1>
+    <p style="text-align: center; margin-bottom: 2rem; font-size: 10px;">Rest here, weary traveler.</p>
+    
+    <div class="tabs">
+      <div class="tab active" id="tab-login">RETURNING HERO</div>
+      <div class="tab" id="tab-register">NEW HERO</div>
+    </div>
 
-      <form id="login-form">
-        <div class="form-group">
-          <input type="email" name="email" class="form-control" placeholder=" " required>
-          <label class="floating-label">Email Address</label>
+    <div class="panel" id="auth-panel">
+      <div id="error-msg" class="error-msg" style="display: none;"></div>
+      <form id="auth-form">
+        <div id="register-fields" style="display: none;">
+          <label class="text-green" style="font-size:10px;">USERNAME</label>
+          <input type="text" id="username" placeholder="Enter username">
         </div>
-        <div class="form-group">
-          <input type="password" name="password" id="login-password" class="form-control" placeholder=" " required minlength="8">
-          <label class="floating-label">Password</label>
-          <span class="password-toggle" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--color-muted);">👁️</span>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--spacing-4);">Enter the Void</button>
-        <p id="forgot-password-btn" style="text-align: center; margin-top: var(--spacing-4); font-size: 0.85rem; color: var(--color-muted); cursor: pointer;">Forgot Password?</p>
+        
+        <label class="text-green" style="font-size:10px;">EMAIL</label>
+        <input type="email" id="email" placeholder="Enter email" required>
+        
+        <label class="text-green" style="font-size:10px;">PASSWORD</label>
+        <input type="password" id="password" placeholder="Enter password" required>
+        
+        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;" id="submit-btn">ENTER REALM</button>
       </form>
-
-      <form id="signup-form" style="display: none;">
-        <div class="form-group">
-          <input type="email" name="email" class="form-control" placeholder=" " required>
-          <label class="floating-label">Email Address</label>
-        </div>
-        <div class="form-group">
-          <input type="password" name="password" id="signup-password" class="form-control" placeholder=" " required minlength="8">
-          <label class="floating-label">Password (Min 8 chars)</label>
-          <span class="password-toggle" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--color-muted);">👁️</span>
-        </div>
-        <div class="form-group">
-          <input type="password" name="confirmPassword" id="signup-confirm-password" class="form-control" placeholder=" " required minlength="8">
-          <label class="floating-label">Confirm Password</label>
-          <span class="password-toggle" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--color-muted);">👁️</span>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: var(--spacing-4);">Create Account</button>
-      </form>
+    </div>
+    
+    <div style="text-align:center; margin-top: 1rem;">
+      <a href="../index.html" style="font-size: 10px;">FLEE TO MENU</a>
     </div>
   </div>
 
-  <div id="footer-container"></div>
-  <script type="module" src="../scripts/utils.js"></script>
-  <script type="module" src="../scripts/auth.js"></script>
+  <script src="../scripts/utils.js"></script>
+  <script src="../scripts/auth.js"></script>
 </body>
 </html>

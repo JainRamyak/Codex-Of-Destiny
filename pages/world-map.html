@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Map | Codex of Destiny</title>
+  <link rel="stylesheet" href="../styles/globals.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/animations.css">
+  <style>
+    body {
+      padding-top: 60px; /* Space for HUD */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      background: #111;
+    }
+    .map-container {
+      position: relative;
+      width: 800px;
+      height: 500px;
+      background: #2b1d0e; /* base brown */
+      border: var(--border-pixel);
+      margin-top: 2rem;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+    }
+    
+    /* CSS Grid Map Details (Simple representation) */
+    .map-cell { background: #2b1d0e; }
+    .map-water { background: #0074d9; }
+    .map-forest { background: #2ecc40; }
+    .map-mountain { background: #888; }
+    
+    .zone-marker {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      text-align: center;
+      z-index: 10;
+    }
+    
+    .zone-icon {
+      font-size: 30px;
+      background: var(--pixel-surface);
+      border: 2px solid var(--pixel-gold);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      box-shadow: 2px 2px 0 #000;
+      transition: transform 0.2s;
+    }
+    
+    .zone-marker:hover .zone-icon {
+      transform: scale(1.1);
+    }
+    
+    .zone-label {
+      background: #000;
+      color: var(--pixel-white);
+      font-size: 8px;
+      padding: 4px;
+      margin-top: 5px;
+      border: 1px solid var(--pixel-gold);
+      white-space: nowrap;
+    }
+
+    .zone-locked .zone-icon::after {
+      content: '🔒';
+      position: absolute;
+      font-size: 20px;
+      background: rgba(0,0,0,0.7);
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: 0; left: 0;
+    }
+    .zone-locked { cursor: not-allowed; }
+
+    #hero-sprite {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      background: var(--pixel-blue);
+      border: 2px solid #fff;
+      border-radius: 4px;
+      z-index: 20;
+      transition: top 1s ease-in-out, left 1s ease-in-out;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Map Positioning */
+    #zone-python { top: 80%; left: 20%; }
+    #zone-js { top: 50%; left: 50%; }
+    #zone-cpp { top: 20%; left: 80%; }
+    
+    /* Dialog Box Fixed Bottom */
+    #dialog-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 800px;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+
+  <div class="map-container" id="world-map">
+    <!-- Background grid decoration -->
+    <!-- (Normally we would render the grid cells in JS to keep HTML clean) -->
+    
+    <div id="hero-sprite" class="sprite-walk"></div>
+
+    <div class="zone-marker" id="zone-python" data-zone="python" data-info="The Serpent Marshes: A beginner friendly land where the Python slithers.">
+      <div class="zone-icon">🐍</div>
+      <div class="zone-label">SERPENT MARSHES</div>
+    </div>
+
+    <div class="zone-marker zone-locked" id="zone-js" data-zone="javascript" data-info="The Electric Citadel: Master the web's interactivity. Unlocks after 5 Python quests.">
+      <div class="zone-icon">⚡</div>
+      <div class="zone-label">ELECTRIC CITADEL</div>
+    </div>
+
+    <div class="zone-marker zone-locked" id="zone-cpp" data-zone="cpp" data-info="The Iron Fortress: The final challenge. Unlocks after 5 JS quests.">
+      <div class="zone-icon">⚔️</div>
+      <div class="zone-label">IRON FORTRESS</div>
+    </div>
+
+  </div>
+
+  <div id="dialog-container"></div>
+
+  <script src="../scripts/utils.js"></script>
+  <script src="../scripts/worldmap.js"></script>
+</body>
+</html>

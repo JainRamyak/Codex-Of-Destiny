@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boss Battle | Codex of Destiny</title>
+  <link rel="stylesheet" href="../styles/globals.css">
+  <link rel="stylesheet" href="../styles/layout.css">
+  <link rel="stylesheet" href="../styles/components.css">
+  <link rel="stylesheet" href="../styles/animations.css">
+  <style>
+    body { padding-top: 60px; background: #0a0a0a; }
+    
+    .battle-scene {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 300px;
+      padding: 0 50px;
+      border-bottom: 5px solid var(--pixel-surface);
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    .combatant {
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-sprite {
+      width: 80px; height: 80px;
+      background: var(--pixel-blue);
+      border: 3px solid #fff;
+    }
+
+    .boss-sprite {
+      width: 120px; height: 120px;
+      background: var(--pixel-red);
+      border: 3px solid #000;
+      animation: floatUp 2s infinite alternate ease-in-out;
+    }
+
+    .hp-bar-container {
+      width: 150px; height: 15px;
+      background: #000;
+      border: 2px solid #fff;
+      margin-bottom: 10px;
+    }
+
+    .hp-bar {
+      height: 100%;
+      background: var(--pixel-red);
+      transition: width 0.3s;
+    }
+
+    .boss-dialog {
+      background: #000;
+      color: var(--pixel-green);
+      border: var(--border-pixel);
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .choice-btn {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 10px;
+      text-transform: none;
+      font-family: monospace;
+      font-size: 12px;
+    }
+
+    #flash-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      pointer-events: none; z-index: 9999; opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="navbar-container"></div>
+  <div id="flash-overlay"></div>
+
+  <div class="container">
+    <div class="battle-scene" id="battle-scene">
+      <div class="combatant" id="hero-combatant">
+        <div class="hp-bar-container"><div class="hp-bar" id="hero-hp" style="width: 100%;"></div></div>
+        <div class="hero-sprite" id="hero-avatar"></div>
+      </div>
+      
+      <div class="combatant" id="boss-combatant">
+        <div class="hp-bar-container"><div class="hp-bar" id="boss-hp" style="width: 100%;"></div></div>
+        <div class="boss-sprite"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="question-panel">
+      <h2 class="text-red">THE BUG LORD ATTACKS!</h2>
+      <p style="font-size: 10px; margin-bottom: 10px;">Fix the broken code to deal damage!</p>
+      
+      <div class="boss-dialog" id="broken-code">
+        Loading...
+      </div>
+
+      <div id="choices-container">
+        <!-- Buttons injected here -->
+      </div>
+    </div>
+    
+    <div id="end-screen" class="panel" style="display:none; text-align:center;">
+        <h2 id="end-title"></h2>
+        <p id="end-desc" style="font-size:12px; margin: 20px 0;"></p>
+        <button class="btn" onclick="window.location.href='world-map.html'">RETURN TO MAP</button>
+    </div>
+  </div>
+
+  <script src="../scripts/utils.js"></script>
+  <script src="../scripts/battle.js"></script>
+</body>
+</html>

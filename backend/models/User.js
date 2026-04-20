@@ -1,35 +1,25 @@
-// In-memory mock for mongoose User model
-const crypto = require('crypto');
+const mongoose = require('mongoose');
 
-const users = [];
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  passwordHash: { type: String, required: true },
+  
+  heroName: { type: String, default: 'Hero' },
+  heroClass: { type: String, enum: ['Code Mage', 'Script Knight', 'Iron Coder'], default: 'Code Mage' },
+  heroAvatar: { type: String, default: 'blue' },
+  
+  xp: { type: Number, default: 0 },
+  gold: { type: Number, default: 100 },
+  level: { type: Number, default: 1 },
+  hp: { type: Number, default: 100 },
+  
+  completedQuests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Quest' }],
+  inventory: [{ type: String }],
+  badges: [{ type: String }],
+  
+  streak: { type: Number, default: 0 },
+  lastLogin: { type: Date, default: Date.now }
+});
 
-class User {
-  constructor(data) {
-    this._id = crypto.randomBytes(16).toString('hex');
-    this.id = this._id;
-    this.username = data.username;
-    this.email = data.email;
-    this.password = data.password;
-    this.inventory = data.inventory || [];
-  }
-
-  static async findOne(query) {
-    return users.find(u => u.email === query.email) || null;
-  }
-
-  static async findById(id) {
-    return users.find(u => u.id === id) || null;
-  }
-
-  async save() {
-    const existing = users.findIndex(u => u.id === this.id);
-    if (existing > -1) {
-      users[existing] = this;
-    } else {
-      users.push(this);
-    }
-    return this;
-  }
-}
-
-module.exports = User;
+module.exports = mongoose.model('User', UserSchema);

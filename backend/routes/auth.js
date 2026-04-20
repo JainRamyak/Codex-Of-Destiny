@@ -1,73 +1,70 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-// POST /api/auth/register
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
+
+// Register
 router.post('/register', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
     
-    // Check if user exists
     let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ error: 'User already exists' });
-    }
+    if (user) return res.status(400).json({ msg: 'User already exists' });
 
-    user = new User({ email, password });
-
-    // Hash password
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
+    const passwordHash = await bcrypt.hash(password, salt);
 
+    user = new User({ username, email, passwordHash });
     await user.save();
 
-    // Create JWT
     const payload = { user: { id: user.id } };
-    const secret = process.env.JWT_SECRET || 'fallback_secret';
-    
-    jwt.sign(payload, secret, { expiresIn: '5h' }, (err, token) => {
+    jwt.sign(payload, JWT_SECRET, { expiresIn: '5h' }, (err, token) => {
       if (err) throw err;
-      res.status(201).json({ message: 'User registered', token, user: { email: user.email } });
+      res.json({ token, user: { id: user.id, username, email } });
     });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ error: 'Server error' });
+  } catch (err) {
+    res.status(500).send('Server error');
   }
 });
 
-// POST /api/auth/login
+// Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
     let user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ error: 'Invalid Credentials' });
-    }
+    if (!user) return res.status(400).json({ msg: 'Invalid Credentials' });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Invalid Credentials' });
-    }
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) return res.status(400).json({ msg: 'Invalid Credentials' });
+
+    user.lastLogin = Date.now();
+    await user.save();
 
     const payload = { user: { id: user.id } };
-    const secret = process.env.JWT_SECRET || 'fallback_secret';
-
-    jwt.sign(payload, secret, { expiresIn: '5h' }, (err, token) => {
+    jwt.sign(payload, JWT_SECRET, { expiresIn: '5h' }, (err, token) => {
       if (err) throw err;
-      res.status(200).json({ message: 'Login successful', token, user: { email: user.email } });
+      res.json({ token, user });
     });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ error: 'Server error' });
+  } catch (err) {
+    res.status(500).send('Server error');
   }
 });
 
-// POST /api/auth/logout
-router.post('/logout', (req, res) => {
-  res.status(200).json({ message: 'Logged out successfully' });
+// Get User Info
+router.get('/me', async (req, res) => {
+  const token = req.header('x-auth-token');
+  if (!token) return res.status(401).json({ msg: 'No token, authorization denied' });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.user.id).select('-passwordHash');
+    res.json(user);
+  } catch (err) {
+    res.status(401).json({ msg: 'Token is not valid' });
+  }
 });
 
 module.exports = router;
